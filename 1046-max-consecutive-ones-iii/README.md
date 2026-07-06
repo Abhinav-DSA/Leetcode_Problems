@@ -26,3 +26,80 @@ Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.
 	<li><code>nums[i]</code> is either 0 or 1.</li>
 	<li><code>0 &lt;= k &lt;= nums.length</code></li>
 </ul>
+
+# 🔢 Max Consecutive Ones III | LeetCode 1004
+
+![Java](https://img.shields.io/badge/Java-Solution-blue)
+![Sliding Window](https://img.shields.io/badge/Sliding%20Window-green)
+![Time Complexity](https://img.shields.io/badge/Time-O(n)-green)
+![Space](https://img.shields.io/badge/Space-O(1)-yellow)
+
+## Problem Statement
+
+Given a binary array `nums` and an integer `k`, return the **maximum number of consecutive 1's** you can achieve by flipping **at most `k` 0's**.
+
+---
+
+## Theory of the Method: Sliding Window Technique
+
+### What is Sliding Window?
+Sliding Window is an optimization technique that maintains a **dynamic subarray** (window) using two pointers — `left` and `right`.
+
+- **Expand** the window by moving `right`.
+- **Shrink** the window by moving `left` when the window becomes **invalid**.
+
+### Why Sliding Window is Perfect Here?
+We need the **longest valid subarray** that contains **at most `k` zeros**.  
+Sliding Window efficiently finds the maximum length valid window in linear time.
+
+---
+
+## Intuition You Should Think Of
+
+**Core Intuition:**
+
+> "I have a budget of `k` flips. I want the longest continuous segment I can cover using this budget."
+
+**Think like this:**
+- Treat `0`s as "costly" elements that require a flip.
+- Expand your window as much as possible.
+- When you run out of flips (`zeros > k`), remove elements from the start (move `left` pointer) to "refund" a flip.
+- Always keep track of the longest valid window seen so far.
+
+**Real-life Analogy**:  
+You are driving on a road with potholes (0s). You have `k` repair kits. What's the longest stretch of road you can make fully usable?
+
+This intuition leads directly to the **Sliding Window** solution.
+
+---
+
+## Java Solution
+
+```java
+class Solution {
+    public int longestOnes(int[] nums, int k) {
+        int left = 0;
+        int maxLength = 0;
+        int zerosCount = 0;
+        
+        for (int right = 0; right < nums.length; right++) {
+            // Expand window
+            if (nums[right] == 0) {
+                zerosCount++;
+            }
+            
+            // Shrink window if invalid (more than k zeros)
+            while (zerosCount > k) {
+                if (nums[left] == 0) {
+                    zerosCount--;
+                }
+                left++;
+            }
+            
+            // Update maximum length
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        
+        return maxLength;
+    }
+}
