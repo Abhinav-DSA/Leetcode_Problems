@@ -43,3 +43,42 @@ The sum of the numbers after index 2 is: 0
 
 <p>&nbsp;</p>
 <p><strong>Note:</strong> This question is the same as&nbsp;724:&nbsp;<a href="https://leetcode.com/problems/find-pivot-index/" target="_blank">https://leetcode.com/problems/find-pivot-index/</a></p>
+
+# 🔍 Find the Middle Index in Array | LeetCode 1991
+
+![Java](https://img.shields.io/badge/Java-Solution-blue)
+![Time Complexity](https://img.shields.io/badge/Time-O(n)-green)
+![Space Complexity](https://img.shields.io/badge/Space-O(1)-yellow)
+
+## Problem Statement
+
+Given a **0-indexed** integer array `nums`, find the **leftmost middle index** (smallest index) such that the sum of all elements **strictly to the left** equals the sum of all elements **strictly to the right**.
+
+If no such index exists, return `-1`.
+
+---
+
+## Solution
+
+```java
+class Solution {
+    public int findMiddleIndex(int[] nums) {
+        int totalSum = 0;
+        int leftSum = 0;
+        
+        // Calculate total sum
+        for (int num : nums) {
+            totalSum += num;
+        }
+        
+        // Find middle index
+        for (int i = 0; i < nums.length; i++) {
+            if (leftSum == totalSum - leftSum - nums[i]) {
+                return i;
+            }
+            leftSum += nums[i];
+        }
+        
+        return -1;
+    }
+}
