@@ -20,57 +20,73 @@ You must implement the `MinStack` class with these methods.
 ## Intuition & How to Think
 
 **Main Challenge**:  
-We need to get the minimum element in O(1) time while also supporting normal stack operations.
-
-**Naive Approach** (Not Good):  
-Keeping a sorted list or using a min-heap would make `push`/`pop` slower than O(1).
+We need to get the minimum element in O(1) time while supporting normal stack operations.
 
 **Best Approach**:  
-Use **two stacks**:
-1. One normal stack to store all elements.
-2. Another stack (`minStack`) to keep track of the **current minimum** at each state.
+Instead of using two separate stacks, we store **both the value and the current minimum** in each node.  
+This way, every element in the stack knows the minimum value up to that point.
 
 **Key Idea**:
-- Whenever we push a new element, we also push the **current minimum** onto the min stack.
-- When we pop, we pop from both stacks.
-- The top of the min stack always gives us the minimum element in O(1) time.
+- When pushing a new value, we calculate the new minimum and store it with the value.
+- When popping, we simply remove the top node.
+- The top node's `min` value always gives us the current minimum.
 
 ---
 
 ## Java Solution
 
 ```java
+import java.util.Stack;
+
+class Node {
+    int val;
+    int min;
+    public Node(int v, int m) {
+        this.val = v;
+        this.min = m;
+    }
+}
+
 class MinStack {
-    
-    private Stack<Integer> stack;
-    private Stack<Integer> minStack;
+    Stack<Node> stack;
     
     public MinStack() {
         stack = new Stack<>();
-        minStack = new Stack<>();
     }
     
-    public void push(int val) {
-        stack.push(val);
+    public void push(int value) {
+        if (stack.isEmpty()) {
+            stack.push(new Node(value, value));
+            return;
+        }
         
-        // Push current minimum to minStack
-        if (minStack.isEmpty() || val <= minStack.peek()) {
-            minStack.push(val);
+        Node nodeTop = stack.peek();
+        int minTop = nodeTop.min;
+        
+        if (value < minTop) {
+            stack.push(new Node(value, value));
         } else {
-            minStack.push(minStack.peek());
+            stack.push(new Node(value, minTop));
         }
     }
     
     public void pop() {
-        stack.pop();
-        minStack.pop();
+        if (!stack.isEmpty()) {
+            stack.pop();
+        }
     }
     
     public int top() {
-        return stack.peek();
+        if (stack.isEmpty()) {
+            return -1;
+        }
+        return stack.peek().val;
     }
     
     public int getMin() {
-        return minStack.peek();
+        if (stack.isEmpty()) {
+            return -1;
+        }
+        return stack.peek().min;
     }
 }
